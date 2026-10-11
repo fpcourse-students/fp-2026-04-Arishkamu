@@ -95,7 +95,7 @@ nSumDigits n = go (0, 0) $ if n < 0 then (-n) else n
   where
     go (abs_n, abs_sum) n'
       | n' < 10   = (1 + abs_n, n' + abs_sum)
-      | otherwise = go (1 + abs_n, mod n' 10) (div n' 10)
+      | otherwise = go (1 + abs_n, mod n' 10 + abs_sum) (div n' 10)
 
 
 
