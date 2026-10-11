@@ -19,9 +19,9 @@ import TypeCheck (Todo)
 -- Оттранслируйте в Haskell варианты в стиле чистого λ-исчисления (по Чёрчу): термы inl,
 -- inr и either. Имя either в Haskell занято стандартной функцией, ваша называется eitherChurch.
 
-inl = todo "2.1 inl"
-inr = todo "2.1 inr"
-eitherChurch = todo "2.1 eitherChurch"
+inl = \x f _ -> f x
+inr = \x _ g -> g x
+eitherChurch = \f g v -> v f g
 
 
 -- 2.2. Предыдущее число
@@ -31,7 +31,7 @@ eitherChurch = todo "2.1 eitherChurch"
 -- В Haskell это predChurch, а fst и snd в нём — ваши fstChurch и sndChurch.
 -- Ознакомьтесь с тем, как этот код тестируется в test/SpecLevel2.hs.
 
-predChurch = todo "2.2"
+predChurch n s z = sndChurch $ n (\p -> pair (s (fstChurch p)) (fstChurch p)) (pair z z)
 
 
 -- 2.3. Простые числа
@@ -39,7 +39,14 @@ predChurch = todo "2.2"
 -- Реализуйте проверку числа на простоту.
 
 isPrime :: Integer -> Bool
-isPrime = todo "2.3"
+isPrime n
+  | n <= 1    = False
+  | otherwise = go 2
+  where
+    go i
+      | i * i > n    = True
+      | mod n i == 0 = False
+      | otherwise    = go (i + 1)
 
 
 -- 2.4. Множество как функция
@@ -56,15 +63,15 @@ isPrime = todo "2.3"
 -- Пример множества {"a", "b", "c"}: emptySet +++ "a" +++ "b" +++ "c".
 
 emptySet :: String -> Bool
-emptySet = todo "2.4 emptySet"
+emptySet _ = False
 
--- TODO объявление приоритета и ассоциативности
+infixl 5 +++
 (+++) :: (String -> Bool) -> String -> (String -> Bool)
-(+++) = todo "2.4 +++"
+(+++) set elem = \check_elem -> set check_elem || elem == check_elem
 
--- TODO объявление приоритета и ассоциативности
+infixl 5 ///
 (///) :: (String -> Bool) -> String -> (String -> Bool)
-(///) = todo "2.4 ///"
+(///) set elem = \check_elem -> set check_elem && elem /= check_elem
 
 
 -- 2.5. Функция по типу
@@ -74,7 +81,7 @@ emptySet = todo "2.4 emptySet"
 -- какой тип компилятор ждёт на её месте и что лежит в контексте (Relevant bindings).
 
 first :: (a -> a') -> (a, b) -> (a', b)
-first = todo "2.5"
+first f p = (f (fst p), snd p)
 
 
 -- 2.6. Предскажите тип: посложнее
@@ -83,13 +90,13 @@ first = todo "2.5"
 -- из комментария, тело оставьте заглушкой.
 
 -- uncurry (flip const)
-typeOfUncurryFlipConst :: Todo
+typeOfUncurryFlipConst :: (a, b) -> b
 typeOfUncurryFlipConst = todo "2.6 uncurry (flip const)"
 
 -- curry id
-typeOfCurryId :: Todo
+typeOfCurryId :: a -> b -> (a, b)
 typeOfCurryId = todo "2.6 curry id"
 
 -- flip (.)
-typeOfFlipCompose :: Todo
+typeOfFlipCompose :: (c -> b) -> (b -> a) -> c -> a
 typeOfFlipCompose = todo "2.6 flip (.)"

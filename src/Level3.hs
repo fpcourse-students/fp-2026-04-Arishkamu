@@ -32,4 +32,4 @@ type Nat = Todo
 -- Откуда взялась идея: http://conal.net/blog/posts/semantic-editor-combinators
 
 deepFirst :: (a -> a') -> ((a, b), c) -> ((a', b), c)
-deepFirst = todo "3.2"
+deepFirst = first . first
